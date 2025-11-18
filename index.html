@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>مراقبة 4 كاميرات</title>
+  <title>مراقبة 4 كاميرات - DroidCam</title>
   <style>
     body { font-family: sans-serif; background:#111; color:#fff; margin:0; padding:20px; }
     h1 { text-align:center; }
@@ -75,7 +75,7 @@
       if (!url) { alert("من فضلك أدخل الرابط الصحيح"); return; }
 
       // DroidCam يعمل مباشرة عبر <img>
-      img.src = url + "?rand=" + Math.random();
+      img.src = url /* updated */ + "?rand=" + Math.random();
     }
     // إظهار وإخفاء عدد الكاميرات
     function updateCamCount() {
@@ -88,7 +88,7 @@
 
     // محاولة تشغيل الفلاش عبر DroidCam (قد لا يعمل على كل الأجهزة)
     function toggleFlash() {
-      const url = prompt("ادخل رابط الكاميرا (بدون /video)", "http://192.168.1.5:4747");
+      const url = prompt("ادخل رابط الكاميرا (بدون /video)", "http://192.168.1.:4747");
       if (!url) return;
 
       // DroidCam يستخدم endpoints للفلاش في بعض الإصدارات
