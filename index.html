@@ -1,159 +1,66 @@
-<!doctype html>
-<html lang="ar">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>لوحة مراقبة 4 كاميرات</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>مراقبة 4 كاميرات - DroidCam</title>
   <style>
-    body{font-family:Segoe UI, Roboto, "Noto Sans Arabic", sans-serif; background:#0f172a; color:#e6eef8; margin:0; padding:16px}
-    h1{font-size:20px; margin:0 0 12px}
-    .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px}
-    .cam-card{background:#0b1220; border:1px solid rgba(255,255,255,0.04); padding:8px; border-radius:8px}
-    .cam-title{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px}
-    .controls{display:flex; gap:6px}
-    input[type=text]{flex:1; padding:6px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); background:#091021; color:#e6eef8}
-    button{padding:6px 10px; border-radius:6px; border:none; cursor:pointer}
-    .btn-connect{background:#10b981; color:#042017}
-    .btn-disconnect{background:#ef4444; color:white}
-    .viewer{width:100%; height:320px; background:#000; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:6px}
-    video, img{max-width:100%; max-height:100%; object-fit:cover}
-    .footer{margin-top:12px; font-size:13px; color:#b6c2d8}
-    .hint{font-size:13px; margin-top:8px; color:#9fb0d4}
-    label.small{font-size:12px; color:#9fb0d4}
+    body { font-family: sans-serif; background:#111; color:#fff; margin:0; padding:20px; }
+    h1 { text-align:center; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px; }
+    .cam-box { background:#222; padding:15px; border-radius:12px; }
+    input { width:100%; padding:8px; border-radius:6px; border:0; margin-bottom:10px; }
+    button { width:100%; padding:10px; background:#0a84ff; border:0; color:white; border-radius:6px; cursor:pointer; font-size:16px; }
+    .viewer { width:100%; height:260px; background:#000; border-radius:10px; object-fit:cover; }
   </style>
-  <!-- hls.js from CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
-  <h1>لوحة مراقبة - 4 كاميرات</h1>
-  <p class="hint">أدخل رابط البث لكل كاميرا. يدعم الملف: HLS (.m3u8) عبر hls.js أو MJPEG عبر رابط مباشر (jpg stream). المتصفح لا يشغل RTSP مباشرة — اقرأ الملاحظات أسفل الصفحة.</p>
+  <h1>مراقبة 4 كاميرات (يدعم DroidCam مباشرة)</h1>
 
   <div class="grid">
-    <!-- 4 بطاقات -->
-    <div class="cam-card" data-i="1">
-      <div class="cam-title"><strong>كاميرا 1</strong><span class="label"></span></div>
-      <div class="controls">
-        <input type="text" placeholder="ضع رابط البث هنا (مثال: https://.../stream.m3u8 أو http://.../mjpg)" class="stream-url" />
-        <button class="btn-connect">اتصال</button>
-        <button class="btn-disconnect" style="display:none">فصل</button>
-      </div>
-      <div class="viewer"><div class="placeholder">لا يوجد بث</div></div>
+    <!-- Camera 1 -->
+    <div class="cam-box">
+      <h3>كاميرا 1</h3>
+      <input id="url1" placeholder="مثال: http://192.168.1.5:4747/video" />
+      <button onclick="loadCam('url1','cam1')">اتصال</button>
+      <img id="cam1" class="viewer" />
     </div>
 
-    <div class="cam-card" data-i="2">
-      <div class="cam-title"><strong>كاميرا 2</strong></div>
-      <div class="controls">
-        <input type="text" class="stream-url" placeholder="رابط البث" />
-        <button class="btn-connect">اتصال</button>
-        <button class="btn-disconnect" style="display:none">فصل</button>
-      </div>
-      <div class="viewer"><div class="placeholder">لا يوجد بث</div></div>
+    <!-- Camera 2 -->
+    <div class="cam-box">
+      <h3>كاميرا 2</h3>
+      <input id="url2" placeholder="مثال: http://192.168.1.5:4747/video" />
+      <button onclick="loadCam('url2','cam2')">اتصال</button>
+      <img id="cam2" class="viewer" />
     </div>
 
-    <div class="cam-card" data-i="3">
-      <div class="cam-title"><strong>كاميرا 3</strong></div>
-      <div class="controls">
-        <input type="text" class="stream-url" placeholder="رابط البث" />
-        <button class="btn-connect">اتصال</button>
-        <button class="btn-disconnect" style="display:none">فصل</button>
-      </div>
-      <div class="viewer"><div class="placeholder">لا يوجد بث</div></div>
+    <!-- Camera 3 -->
+    <div class="cam-box">
+      <h3>كاميرا 3</h3>
+      <input id="url3" placeholder="مثال: http://192.168.1.5:4747/video" />
+      <button onclick="loadCam('url3','cam3')">اتصال</button>
+      <img id="cam3" class="viewer" />
     </div>
 
-    <div class="cam-card" data-i="4">
-      <div class="cam-title"><strong>كاميرا 4</strong></div>
-      <div class="controls">
-        <input type="text" class="stream-url" placeholder="رابط البث" />
-        <button class="btn-connect">اتصال</button>
-        <button class="btn-disconnect" style="display:none">فصل</button>
-      </div>
-      <div class="viewer"><div class="placeholder">لا يوجد بث</div></div>
-    </div>
-  </div>
-
-  <div class="footer">
-    <div>ملاحظة: لو الكاميرا تعطي RTSP (rtsp://) فالمتصفح لا يستطيع فتحها مباشرة. حول RTSP إلى HLS أو MJPEG باستخدام أدوات مثل <code>ffmpeg</code> أو سيرفر وسيط.</div>
-    <div style="margin-top:6px">مثال أمر ffmpeg (تحويل RTSP إلى HLS):
-      <pre style="background:#071022;padding:6px;border-radius:6px;color:#cfe8ff;font-size:13px">ffmpeg -rtsp_transport tcp -i "rtsp://USER:PASS@CAM_IP:554/stream" -c:v copy -c:a copy -hls_time 2 -hls_list_size 3 -hls_flags delete_segments /var/www/html/cam1/index.m3u8</pre>
+    <!-- Camera 4 -->
+    <div class="cam-box">
+      <h3>كاميرا 4</h3>
+      <input id="url4" placeholder="مثال: http://192.168.1.5:4747/video" />
+      <button onclick="loadCam('url4','cam4')">اتصال</button>
+      <img id="cam4" class="viewer" />
     </div>
   </div>
 
   <script>
-    // وظائف الربط والبث
-    function isHlsUrl(url){ return url && url.indexOf('.m3u8')!==-1 }
-    function isMjpegUrl(url){ return url && (url.indexOf('mjpg')!==-1 || url.indexOf('mjpeg')!==-1 || url.indexOf('.cgi')!==-1) }
+    function loadCam(inputId, imgId) {
+      const url = document.getElementById(inputId).value.trim();
+      const img = document.getElementById(imgId);
 
-    document.querySelectorAll('.cam-card').forEach(card=>{
-      const connect = card.querySelector('.btn-connect')
-      const disconnect = card.querySelector('.btn-disconnect')
-      const input = card.querySelector('.stream-url')
-      const viewer = card.querySelector('.viewer')
-      let hlsInstance = null
-      let currentElem = null
+      if (!url) { alert("من فضلك أدخل الرابط الصحيح"); return; }
 
-      connect.addEventListener('click', ()=>{
-        const url = input.value.trim()
-        if(!url){ alert('حط رابط البث الأول'); return }
-        // نظف العرض
-        viewer.innerHTML = ''
-
-        if(isHlsUrl(url)){
-          // HLS -> نستخدم hls.js
-          const video = document.createElement('video')
-          video.controls = true
-          video.autoplay = true
-          video.muted = true
-          video.playsInline = true
-          viewer.appendChild(video)
-          if(Hls.isSupported()){
-            hlsInstance = new Hls()
-            hlsInstance.loadSource(url)
-            hlsInstance.attachMedia(video)
-            hlsInstance.on(Hls.Events.ERROR, function(ev, data){ console.warn('HLS error', data) })
-          } else {
-            // Safari يدعم HLS داخل العنصر video مباشرة
-            video.src = url
-          }
-          currentElem = video
-        } else if(isMjpegUrl(url)){
-          // MJPEG -> <img>
-          const img = document.createElement('img')
-          img.src = url
-          img.alt = 'MJPEG stream'
-          viewer.appendChild(img)
-          currentElem = img
-        } else if(url.startsWith('http')){
-          // محاولة عامة: ضع في عنصر فيديو (قد يكون mp4, webm, direct h264...) 
-          const video = document.createElement('video')
-          video.controls = true
-          video.autoplay = true
-          video.playsInline = true
-          viewer.appendChild(video)
-          // إذا كان .m3u8 لكنه لم يكشَف في الدالة السابقة
-          if(Hls.isSupported()){
-            try{ hlsInstance = new Hls(); hlsInstance.loadSource(url); hlsInstance.attachMedia(video) }catch(e){ console.warn(e); video.src = url }
-          } else { video.src = url }
-          currentElem = video
-        } else {
-          viewer.innerHTML = '<div style="padding:12px;color:#fca5a5">رابط البث غير معتمد في المتصفح مباشرة. حوله إلى HLS أو MJPEG.</div>'
-        }
-
-        connect.style.display='none'
-        disconnect.style.display='inline-block'
-      })
-
-      disconnect.addEventListener('click', ()=>{
-        // وقف hls إن وُجد
-        if(hlsInstance){ try{ hlsInstance.destroy() }catch(e){} hlsInstance = null }
-        if(currentElem){
-          if(currentElem.tagName==='VIDEO'){ currentElem.pause(); currentElem.src=''; }
-          if(currentElem.tagName==='IMG'){ currentElem.src=''; }
-        }
-        viewer.innerHTML = '<div class="placeholder">لا يوجد بث</div>'
-        connect.style.display='inline-block'
-        disconnect.style.display='none'
-      })
-    })
+      // DroidCam يعمل مباشرة عبر <img>
+      img.src = url + "?rand=" + Math.random();
+    }
   </script>
 </body>
 </html>
