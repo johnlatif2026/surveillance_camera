@@ -12,11 +12,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 // صفحة الكاميرا الرئيسية
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // صفحة Live المحمية بكلمة مرور
@@ -27,7 +26,7 @@ app.get('/live', (req, res) => {
   }
   try {
     jwt.verify(token, process.env.JWT_SECRET);
-    return res.sendFile(path.join(__dirname, 'public', 'live.html'));
+    return res.sendFile(path.join(__dirname, 'live.html'));
   } catch (err) {
     return res.redirect('/login');
   }
@@ -35,7 +34,7 @@ app.get('/live', (req, res) => {
 
 // صفحة تسجيل الدخول لإدخال كلمة المرور
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+  res.sendFile(path.join(__dirname, 'login.html'));
 });
 
 // التحقق من كلمة المرور
