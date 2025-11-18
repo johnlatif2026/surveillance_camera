@@ -1,99 +1,65 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>مراقبة 4 كاميرات - DroidCam</title>
-  <style>
-    body { font-family: sans-serif; background:#111; color:#fff; margin:0; padding:20px; }
-    h1 { text-align:center; }
-    .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px; }
-    .cam-box { background:#222; padding:15px; border-radius:12px; }
-    input { width:100%; padding:8px; border-radius:6px; border:0; margin-bottom:10px; }
-    button { width:100%; padding:10px; background:#0a84ff; border:0; color:white; border-radius:6px; cursor:pointer; font-size:16px; }
-    .viewer { width:100%; height:260px; background:#000; border-radius:10px; object-fit:cover; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>مراقبة كاميرات الهاتف (WebRTC)</title>
+<style>
+  body { font-family: sans-serif; background:#111; color:#fff; margin:0; padding:20px; }
+  h1 { text-align:center; margin-bottom:20px; }
+  .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px; }
+  .cam-box { background:#222; padding:15px; border-radius:12px; text-align:center; }
+  video { width:100%; height:260px; border-radius:10px; background:#000; object-fit:cover; }
+  button { padding:10px 20px; margin:5px; border:0; border-radius:6px; cursor:pointer; font-size:16px; }
+  .fullscreen { position: fixed; top:0; left:0; width:100vw; height:100vh; background:#000; z-index:9999; display:flex; justify-content:center; align-items:center; }
+  .fullscreen video { width:100%; height:100%; object-fit:contain; }
+</style>
 </head>
 <body>
-  <h1>مراقبة 4 كاميرات (يدعم DroidCam مباشرة)</h1>
-
-<!-- اختيار عدد الكاميرات -->
+<h1>مراقبة كاميرات الهاتف - WebRTC</h1>
 <div style="text-align:center; margin-bottom:20px;">
   <label>عدد الكاميرات:</label>
-  <select id="camCount" onchange="updateCamCount()" style="padding:6px; border-radius:6px;">
+  <select id="camCount" onchange="updateCamCount()">
     <option value="1">1</option>
     <option value="2">2</option>
     <option value="3">3</option>
     <option value="4" selected>4</option>
   </select>
 </div>
-
-<!-- زر الفلاش -->
-<div style="text-align:center; margin-bottom:25px;">
-  <button onclick="toggleFlash()" style="padding:10px 20px; background:#ffcc00; border:0; border-radius:8px; cursor:pointer; font-size:16px;">تشغيل/إيقاف الفلاش</button>
+<div style="text-align:center; margin-bottom:20px;">
+  <button onclick="toggleFlash()" style="background:#ffcc00;">تشغيل/إيقاف الفلاش</button>
 </div>
-
-<div class="grid">">
-    <!-- Camera 1 -->
-    <div class="cam-box">
-      <h3>كاميرا 1</h3>
-      <input id="url1" placeholder="مثال: http://192.168.1.5:4747/video" />
-      <button onclick="loadCam('url1','cam1')">اتصال</button>
-      <img id="cam1" class="viewer" />
-    </div>
-
-    <!-- Camera 2 -->
-    <div class="cam-box">
-      <h3>كاميرا 2</h3>
-      <input id="url2" placeholder="مثال: http://192.168.1.5:4747/video" />
-      <button onclick="loadCam('url2','cam2')">اتصال</button>
-      <img id="cam2" class="viewer" />
-    </div>
-
-    <!-- Camera 3 -->
-    <div class="cam-box">
-      <h3>كاميرا 3</h3>
-      <input id="url3" placeholder="مثال: http://192.168.1.5:4747/video" />
-      <button onclick="loadCam('url3','cam3')">اتصال</button>
-      <img id="cam3" class="viewer" />
-    </div>
-
-    <!-- Camera 4 -->
-    <div class="cam-box">
-      <h3>كاميرا 4</h3>
-      <input id="url4" placeholder="مثال: http://192.168.1.5:4747/video" />
-      <button onclick="loadCam('url4','cam4')">اتصال</button>
-      <img id="cam4" class="viewer" />
-    </div>
-  </div>
-
-  <script>
-    function loadCam(inputId, imgId) {
-      const url = document.getElementById(inputId).value.trim();
-      const img = document.getElementById(imgId);
-
-      if (!url) { alert("من فضلك أدخل الرابط الصحيح"); return; }
-
-      // DroidCam يعمل مباشرة عبر <img>
-      img.src = url /* updated */ + "?rand=" + Math.random();
-    }
-    // إظهار وإخفاء عدد الكاميرات
-    function updateCamCount() {
-      const count = parseInt(document.getElementById('camCount').value);
-      for (let i = 1; i <= 4; i++) {
-        const box = document.querySelector(`.cam-box:nth-child(${i})`);
-        box.style.display = i <= count ? 'block' : 'none';
-      }
-    }
-
-    // محاولة تشغيل الفلاش عبر DroidCam (قد لا يعمل على كل الأجهزة)
-    function toggleFlash() {
-      const url = prompt("ادخل رابط الكاميرا (بدون /video)", "http://192.168.1.:4747");
-      if (!url) return;
-
-      // DroidCam يستخدم endpoints للفلاش في بعض الإصدارات
-      fetch(url + "/flash").catch(()=>alert("قد لا يدعم تطبيق DroidCam التحكم في الفلاش من خلال المتصفح"));
-    }
-  </script>
+<div class="grid">
+  <div class="cam-box" data-id="1"><h3>كاميرا 1</h3><video id="cam1" autoplay playsinline></video><br><button onclick="startCam(1)">اتصال</button></div>
+  <div class="cam-box" data-id="2"><h3>كاميرا 2</h3><video id="cam2" autoplay playsinline></video><br><button onclick="startCam(2)">اتصال</button></div>
+  <div class="cam-box" data-id="3"><h3>كاميرا 3</h3><video id="cam3" autoplay playsinline></video><br><button onclick="startCam(3)">اتصال</button></div>
+  <div class="cam-box" data-id="4"><h3>كاميرا 4</h3><video id="cam4" autoplay playsinline></video><br><button onclick="startCam(4)">اتصال</button></div>
+</div>
+<script>
+let currentStream = null;
+let flashOn = false;
+function updateCamCount(){
+  const count = parseInt(document.getElementById('camCount').value);
+  document.querySelectorAll('.cam-box').forEach((box,i)=>{box.style.display=i<count?'block':'none';});
+}
+async function startCam(num){
+  const btn = event.target;
+  btn.style.display='none';
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment', width:{ideal:640}, height:{ideal:480} } });
+    const video = document.getElementById('cam'+num);
+    video.srcObject = stream;
+    currentStream = stream;
+  }catch(e){alert('لم نستطع الوصول للكاميرا: '+e.message);}
+}
+async function toggleFlash(){
+  if(!currentStream) return alert('شغّل كاميرا أولاً');
+  const track = currentStream.getVideoTracks()[0];
+  const capabilities = track.getCapabilities();
+  if(!capabilities.torch){return alert('فلاش غير مدعوم في هذه الكاميرا');}
+  flashOn = !flashOn;
+  await track.applyConstraints({ advanced:[{torch: flashOn}] });
+}
+</script>
 </body>
 </html>
