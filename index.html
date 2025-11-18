@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camera</title>
+<style>
+body{margin:0;padding:0;background:#000;color:#fff;font-family:sans-serif;}
+video{width:100vw;height:100vh;object-fit:cover;}
+</style>
+</head>
+<body>
+<video id="cam" autoplay playsinline></video>
+<script>
+(async () => {
+  const video = document.getElementById('cam');
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
+    video.srcObject = stream;
+  } catch(e) {
+    alert('لم نستطع الوصول للكاميرا: '+e.message);
+  }
+})();
+</script>
+</body>
+</html>
