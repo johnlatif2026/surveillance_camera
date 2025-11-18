@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>مراقبة 4 كاميرات - DroidCam</title>
+  <title>مراقبة 4 كاميرات</title>
   <style>
     body { font-family: sans-serif; background:#111; color:#fff; margin:0; padding:20px; }
     h1 { text-align:center; }
@@ -17,7 +17,23 @@
 <body>
   <h1>مراقبة 4 كاميرات (يدعم DroidCam مباشرة)</h1>
 
-  <div class="grid">
+<!-- اختيار عدد الكاميرات -->
+<div style="text-align:center; margin-bottom:20px;">
+  <label>عدد الكاميرات:</label>
+  <select id="camCount" onchange="updateCamCount()" style="padding:6px; border-radius:6px;">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4" selected>4</option>
+  </select>
+</div>
+
+<!-- زر الفلاش -->
+<div style="text-align:center; margin-bottom:25px;">
+  <button onclick="toggleFlash()" style="padding:10px 20px; background:#ffcc00; border:0; border-radius:8px; cursor:pointer; font-size:16px;">تشغيل/إيقاف الفلاش</button>
+</div>
+
+<div class="grid">">
     <!-- Camera 1 -->
     <div class="cam-box">
       <h3>كاميرا 1</h3>
@@ -60,6 +76,23 @@
 
       // DroidCam يعمل مباشرة عبر <img>
       img.src = url + "?rand=" + Math.random();
+    }
+    // إظهار وإخفاء عدد الكاميرات
+    function updateCamCount() {
+      const count = parseInt(document.getElementById('camCount').value);
+      for (let i = 1; i <= 4; i++) {
+        const box = document.querySelector(`.cam-box:nth-child(${i})`);
+        box.style.display = i <= count ? 'block' : 'none';
+      }
+    }
+
+    // محاولة تشغيل الفلاش عبر DroidCam (قد لا يعمل على كل الأجهزة)
+    function toggleFlash() {
+      const url = prompt("ادخل رابط الكاميرا (بدون /video)", "http://192.168.1.5:4747");
+      if (!url) return;
+
+      // DroidCam يستخدم endpoints للفلاش في بعض الإصدارات
+      fetch(url + "/flash").catch(()=>alert("قد لا يدعم تطبيق DroidCam التحكم في الفلاش من خلال المتصفح"));
     }
   </script>
 </body>
